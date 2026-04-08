@@ -2,22 +2,31 @@ import { useEffect, useRef, useState } from "react";
 import "./FlashcardApp.css";
 
 function FlashcardApp() {
+  // Full flashcard list with UI-only fields (like showAnswer)
   const [flashcards, setFlashcards] = useState([]);
+  // Form input for question
   const [question, setQuestion] = useState("");
+  // Form input for answer
   const [answer, setAnswer] = useState("");
+  // Currently edited card id; null means create mode
   const [editingId, setEditingId] = useState(null);
+  // Triggers auto-scroll after adding a new card
   const [shouldScrollToLatest, setShouldScrollToLatest] = useState(false);
+  // Stores the newest card id for temporary highlight
   const [latestCardId, setLatestCardId] = useState(null);
+  // Controls visibility of the used cards section
   const [showUsedCards, setShowUsedCards] = useState(false);
 
   const API_BASE = "http://127.0.0.1:8000";
   const cardsContainerRef = useRef(null);
   const usedCardsContainerRef = useRef(null);
 
+  // Load cards once on first render
   useEffect(() => {
     fetchFlashcards();
   }, []);
 
+  // After creating a card, scroll to the end and clear highlight later
   useEffect(() => {
     if (shouldScrollToLatest && cardsContainerRef.current) {
       cardsContainerRef.current.scrollTo({
@@ -35,6 +44,7 @@ function FlashcardApp() {
     }
   }, [flashcards, shouldScrollToLatest]);
 
+  // Fetch cards from backend and keep current show/hide answer state
   const fetchFlashcards = async () => {
     try {
       const response = await fetch(`${API_BASE}/flashcards`);
@@ -54,6 +64,7 @@ function FlashcardApp() {
     }
   };
 
+  // Submit form: update when editing, otherwise create a new card
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -104,6 +115,7 @@ function FlashcardApp() {
     }
   };
 
+  // Delete one flashcard
   const handleDelete = async (id) => {
     try {
       await fetch(`${API_BASE}/flashcards/${id}`, {
@@ -120,12 +132,14 @@ function FlashcardApp() {
     }
   };
 
+  // Fill the form with selected card data for editing
   const handleEdit = (card) => {
     setQuestion(card.question);
     setAnswer(card.answer);
     setEditingId(card.id);
   };
 
+  // Toggle answer visibility for a card
   const handleReveal = (id) => {
     const updatedCards = flashcards.map((card) =>
       card.id === id ? { ...card, showAnswer: !card.showAnswer } : card
@@ -133,6 +147,7 @@ function FlashcardApp() {
     setFlashcards(updatedCards);
   };
 
+  // Move a card to the "used" section
   const handleUseCard = async (id) => {
     try {
       await fetch(`${API_BASE}/flashcards/${id}/use`, {
@@ -149,6 +164,7 @@ function FlashcardApp() {
     }
   };
 
+  // Restore a used card back to active study cards
   const handleRestoreCard = async (card) => {
     try {
       await fetch(`${API_BASE}/flashcards/${card.id}`, {
@@ -169,6 +185,7 @@ function FlashcardApp() {
     }
   };
 
+  // Scroll active cards to the left
   const scrollLeft = () => {
     if (cardsContainerRef.current) {
       cardsContainerRef.current.scrollBy({
@@ -178,6 +195,7 @@ function FlashcardApp() {
     }
   };
 
+  // Scroll active cards to the right
   const scrollRight = () => {
     if (cardsContainerRef.current) {
       cardsContainerRef.current.scrollBy({
@@ -187,6 +205,7 @@ function FlashcardApp() {
     }
   };
 
+  // Scroll used cards to the left
   const scrollUsedLeft = () => {
     if (usedCardsContainerRef.current) {
       usedCardsContainerRef.current.scrollBy({
@@ -196,6 +215,7 @@ function FlashcardApp() {
     }
   };
 
+  // Scroll used cards to the right
   const scrollUsedRight = () => {
     if (usedCardsContainerRef.current) {
       usedCardsContainerRef.current.scrollBy({
@@ -205,6 +225,7 @@ function FlashcardApp() {
     }
   };
 
+  // Split cards into active and used groups
   const activeCards = flashcards.filter((card) => !card.used);
   const usedCards = flashcards.filter((card) => card.used);
 

@@ -2,6 +2,7 @@
   box-sizing: border-box;
 }
 
+/* Global page style */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -9,17 +10,20 @@ body {
   color: #f8fafc;
 }
 
+/* Main app container with bottom space for fixed form bar */
 .app {
   min-height: 100vh;
   padding: 30px 30px 220px;
   background: linear-gradient(to bottom, #0f172a, #111827);
 }
 
+/* Top content width constraint */
 .top-section {
   max-width: 1400px;
   margin: 0 auto;
 }
 
+/* Header: title and used-cards toggle button */
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -28,6 +32,7 @@ body {
   margin-bottom: 20px;
 }
 
+/* Title alignment block */
 .title-block {
   display: flex;
   flex-direction: column;
@@ -35,6 +40,7 @@ body {
   text-align: center;
 }
 
+/* Main title with gradient text */
 .main-title {
   margin: 0 0 10px;
   font-size: 64px;
@@ -47,12 +53,14 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+/* Highlight color for title keyword */
 .main-title span {
   background: linear-gradient(90deg, #22c55e, #4ade80);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
+/* Optional subtitle under title */
 .subtitle {
   margin: 0;
   font-size: 18px;
@@ -60,6 +68,7 @@ body {
   letter-spacing: 0.3px;
 }
 
+/* Toggle button for showing/hiding used cards */
 .used-toggle-btn {
   border: none;
   background: #1d4ed8;
@@ -76,6 +85,7 @@ body {
   background: #1e40af;
 }
 
+/* Shared row layout for section titles */
 .section-title-row {
   display: flex;
   align-items: center;
@@ -83,12 +93,14 @@ body {
   margin: 10px 0 8px;
 }
 
+/* Section heading style */
 .section-title {
   font-size: 28px;
   margin: 0;
   color: #f8fafc;
 }
 
+/* Wraps arrow buttons and horizontal card list */
 .cards-wrapper {
   position: relative;
   display: flex;
@@ -96,6 +108,7 @@ body {
   gap: 16px;
 }
 
+/* Horizontal scroll list for cards */
 .cards-scroll-container {
   display: flex;
   gap: 20px;
@@ -111,6 +124,7 @@ body {
   display: none;
 }
 
+/* Card shell */
 .flashcard {
   flex: 0 0 300px;
   min-height: 260px;
@@ -130,6 +144,7 @@ body {
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
 }
 
+/* New-card temporary highlight */
 .flashcard-highlight {
   border: 2px solid #60a5fa;
   box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.18),
@@ -137,6 +152,7 @@ body {
   animation: pulseHighlight 1.4s ease-in-out 2;
 }
 
+/* Pulse animation for highlighted card */
 @keyframes pulseHighlight {
   0% {
     transform: scale(1);
@@ -149,15 +165,18 @@ body {
   }
 }
 
+/* Visual variant for used cards */
 .used-flashcard {
   background: #172033;
   border: 1px solid rgba(148, 163, 184, 0.25);
 }
 
+/* Click area to reveal answer */
 .flashcard-content {
   cursor: pointer;
 }
 
+/* Card question text */
 .flashcard-content h3 {
   margin: 0 0 16px;
   font-size: 34px;
@@ -165,6 +184,7 @@ body {
   color: #ffffff;
 }
 
+/* Card answer text */
 .flashcard-content p {
   margin: 0;
   color: #d1d5db;
@@ -172,11 +192,13 @@ body {
   font-size: 22px;
 }
 
+/* Hint text when answer is hidden */
 .hint-text {
   color: #94a3b8;
   font-style: italic;
 }
 
+/* Action buttons row in each card */
 .card-actions {
   display: flex;
   gap: 10px;
@@ -184,6 +206,7 @@ body {
   margin-top: 20px;
 }
 
+/* Shared style for card action buttons */
 .card-actions button {
   border: none;
   padding: 10px 14px;
@@ -198,6 +221,7 @@ body {
   background: #374151;
 }
 
+/* Left/right scroll arrow buttons */
 .scroll-btn {
   width: 48px;
   height: 48px;
@@ -215,6 +239,7 @@ body {
   background: #1d4ed8;
 }
 
+/* Empty-state card */
 .empty-card {
   min-width: 300px;
   padding: 30px;
@@ -225,11 +250,13 @@ body {
   font-size: 18px;
 }
 
+/* Used cards block spacing */
 .used-section {
   margin-top: 20px;
   padding-top: 10px;
 }
 
+/* Fixed bottom form bar */
 .bottom-form-bar {
   position: fixed;
   left: 0;
@@ -247,6 +274,7 @@ body {
   box-shadow: 0 -8px 30px rgba(2, 6, 23, 0.45);
 }
 
+/* Form layout container */
 .flashcard-form {
   max-width: 1200px;
   margin: 0 auto;
@@ -262,12 +290,14 @@ body {
     background-color 0.25s ease;
 }
 
+/* Form-level focus feedback */
 .flashcard-form:focus-within {
   border-color: rgba(96, 165, 250, 0.65);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
   background: rgba(15, 23, 42, 0.72);
 }
 
+/* Shared style for question/answer fields */
 .flashcard-form input,
 .flashcard-form textarea {
   width: 100%;
@@ -287,12 +317,14 @@ body {
   border-color: #64748b;
 }
 
+/* Answer field sizing */
 .flashcard-form textarea {
   min-height: 56px;
   max-height: 120px;
   resize: vertical;
 }
 
+/* Input focus highlight */
 .flashcard-form input:focus,
 .flashcard-form textarea:focus {
   border-color: #60a5fa;
@@ -300,17 +332,20 @@ body {
   transform: translateY(-1px);
 }
 
+/* Placeholder text style */
 .flashcard-form input::placeholder,
 .flashcard-form textarea::placeholder {
   color: #94a3b8;
   transition: color 0.2s ease;
 }
 
+/* Brighter placeholder on focus */
 .flashcard-form input:focus::placeholder,
 .flashcard-form textarea:focus::placeholder {
   color: #cbd5e1;
 }
 
+/* Primary submit button */
 .flashcard-form button {
   padding: 14px 22px;
   border: none;
@@ -327,17 +362,20 @@ body {
     filter 0.2s ease;
 }
 
+/* Button hover state */
 .flashcard-form button:hover {
   transform: translateY(-1px);
   box-shadow: 0 14px 24px rgba(37, 99, 235, 0.38);
   filter: brightness(1.05);
 }
 
+/* Button pressed state */
 .flashcard-form button:active {
   transform: translateY(1px);
   box-shadow: 0 6px 14px rgba(37, 99, 235, 0.3);
 }
 
+/* Responsive adjustments for tablets and phones */
 @media (max-width: 900px) {
   .page-header {
     flex-direction: column;
