@@ -1,10 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from sqlmodel import Session, select
+
+from database import engine, create_db_and_tables
+from models import Flashcard, FlashcardCreate, FlashcardUpdate
 
 app = FastAPI()
 
-# Allow React frontend to access backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -13,72 +15,76 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class FlashcardCreate(BaseModel):
-    question: str
-    answer: str
 
-class FlashcardUpdate(BaseModel):
-    question: str
-    answer: str
-    used: bool
+@app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
 
-# Temporary in-memory data
-flashcards = [
-    {
-        "id": 1,
-        "question": "What is React?",
-        "answer": "A JavaScript library for building user interfaces.",
-        "used": False
-    },
-    {
-        "id": 2,
-        "question": "What is FastAPI?",
-        "answer": "A Python framework for building APIs.",
-        "used": False
-    }
-]
 
-next_id = 3
+@app.get("/")
+def home():
+    return {"message": "Flashcard API is running with MySQL"}
+
 
 @app.get("/flashcards")
 def get_flashcards():
-    return flashcards
+    with Session(engine) as session:
+        statement = select(Flashcard)
+        flashcards = session.exec(statement).all()
+        return flashcards
+
 
 @app.post("/flashcards")
 def create_flashcard(data: FlashcardCreate):
-    global next_id
-    new_card = {
-        "id": next_id,
-        "question": data.question,
-        "answer": data.answer,
-        "used": False
-    }
-    flashcards.append(new_card)
-    next_id += 1
-    return new_card
+    with Session(engine) as session:
+        new_card = Flashcard(question=data.question, answer=data.answer, used=False)
+        session.add(new_card)
+        session.commit()
+        session.refresh(new_card)
+        return new_card
+
 
 @app.put("/flashcards/{card_id}")
 def update_flashcard(card_id: int, data: FlashcardUpdate):
-    for card in flashcards:
-        if card["id"] == card_id:
-            card["question"] = data.question
-            card["answer"] = data.answer
-            card["used"] = data.used
-            return card
-    raise HTTPException(status_code=404, detail="Flashcard not found")
+    with Session(engine) as session:
+        card = session.get(Flashcard, card_id)
+
+        if not card:
+            raise HTTPException(status_code=404, detail="Flashcard not found")
+
+        card.question = data.question
+        card.answer = data.answer
+        card.used = data.used
+
+        session.add(card)
+        session.commit()
+        session.refresh(card)
+        return card
+
 
 @app.delete("/flashcards/{card_id}")
 def delete_flashcard(card_id: int):
-    for index, card in enumerate(flashcards):
-        if card["id"] == card_id:
-            deleted = flashcards.pop(index)
-            return {"message": "Deleted successfully", "card": deleted}
-    raise HTTPException(status_code=404, detail="Flashcard not found")
+    with Session(engine) as session:
+        card = session.get(Flashcard, card_id)
+
+        if not card:
+            raise HTTPException(status_code=404, detail="Flashcard not found")
+
+        session.delete(card)
+        session.commit()
+        return {"message": "Deleted successfully"}
+
 
 @app.patch("/flashcards/{card_id}/use")
 def mark_flashcard_used(card_id: int):
-    for card in flashcards:
-        if card["id"] == card_id:
-            card["used"] = True
-            return card
-    raise HTTPException(status_code=404, detail="Flashcard not found")
+    with Session(engine) as session:
+        card = session.get(Flashcard, card_id)
+
+        if not card:
+            raise HTTPException(status_code=404, detail="Flashcard not found")
+
+        card.used = True
+        session.add(card)
+        session.commit()
+        session.refresh(card)
+        return card
